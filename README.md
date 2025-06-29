@@ -81,6 +81,8 @@ This will Give 5 files in ./inference_output:
 - audio_output_speaker_embedding.npy
 
 The content for `audio_output_results.json` will look like:
+<details>
+  <summary>Click to expand</summary>
 ```
 {
   "audio_path": "/speech/suma/rooshil/sample1.wav",
@@ -115,5 +117,5 @@ The content for `audio_output_results.json` will look like:
   }
 }
 ```
-
+</details>
 
