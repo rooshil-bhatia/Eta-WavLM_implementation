@@ -31,6 +31,7 @@ Eta_WavLM_implementation/
 ├── inference_eta_wavlm.py     --> Full inference wrapper
 ├── simple_inference.py        --> Inference example to get features from an audio
 ├── inference_output/          --> Will contain features inferenced from the file simple_inference.py
+├── pretrained_models/          --> This will store ECAPA-TDNN model automatically while starting to train 
 ├── knnvc.py                   --> kNN-VC inference with Eta-WavLm features of the source utterance
 ├── server.py                  --> LitServe Voice Conversion API server
 ├── client.py                  --> API client Example
@@ -43,7 +44,8 @@ After running
 python train_eta_wavlm.py
 ```
 This will:
-1)Download LibriSpeech train-clean-100 dataset automatically (~5.95GB)
+
+1)Download LibriSpeech train-clean-100 dataset automatically to ./data (~5.95GB)
 
 2)Extract WavLM features from the 15th layer (1024 dimensions)
 
@@ -58,7 +60,7 @@ The training script uses these paper-compliant settings:
 - WavLM Model: microsoft/wavlm-large (15th layer)
 - Speaker Encoder: ECAPA-TDNN from SpeechBrain
 - PCA Components: 128 (optimal per paper's ablation)
-- Subsample Frames: 50 frames per utterance (adjustable)
+- Subsample Frames('L' in the paper): 50 frames per utterance (adjustable)
 - Audio Duration: 1-6 seconds (just a filter can be adjusted)
 - Max Training Files: 200 LibriSpeech utterances (adjustable)
 
