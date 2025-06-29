@@ -26,17 +26,17 @@ pip install -r requirements.txt
 ## Folder Structure
 ```
 Eta_WavLM_implementation/
-├── model.py                   --> Core Eta-WavLM implementation
-├── train_eta_wavlm.py         --> Training script
-├── inference_eta_wavlm.py     --> Full inference wrapper
-├── simple_inference.py        --> Inference example to get features from an audio
-├── inference_output/          --> Will contain features inferenced from the file simple_inference.py
-├── pretrained_models/          --> This will store ECAPA-TDNN model automatically while starting to train 
-├── knnvc.py                   --> kNN-VC inference with Eta-WavLm features of the source utterance
-├── server.py                  --> LitServe Voice Conversion API server
-├── client.py                  --> API client Example
+├── data/                      --> LibriSpeech dataset train-clean-100
+├── inference_output/          --> Will contain features inferenced from the file simple_inference.py\
 ├── models/                    --> Trained model files will be saved here (.pkl)
-└── data/                      --> LibriSpeech dataset train-clean-100
+├── pretrained_models/         --> This will store ECAPA-TDNN model automatically while starting to train
+├── client.py                  --> API client Example
+├── inference_eta_wavlm.py     --> Full inference wrapper
+├── knnvc.py                   --> kNN-VC inference with Eta-WavLm features of the source utterance
+├── model.py                   --> Core Eta-WavLM implementation
+├── server.py                  --> LitServe Voice Conversion API server
+├── simple_inference.py        --> Inference example to get features from an audio
+└── train_eta_wavlm.py         --> Training script
 ```
 ## Training 
 After running
@@ -63,4 +63,57 @@ The training script uses these paper-compliant settings:
 - Subsample Frames('L' in the paper): 50 frames per utterance (adjustable)
 - Audio Duration: 1-6 seconds (just a filter can be adjusted)
 - Max Training Files: 200 LibriSpeech utterances (adjustable)
+
+
+## Inferencing
+
+After running
+```bash
+python simple_inference.py
+```
+Make sure to load the Eta-WavLm checkpoint
+
+This will Give 5 files in ./inference_output:
+- audio_output_eta_features.npy
+- audio_output_original_features.npy
+- audio_output_results.json
+- audio_output_speaker_component.npy
+- audio_output_speaker_embedding.npy
+
+The content for `audio_output_results.json` will look like:
+```
+{
+  "audio_path": "/speech/suma/rooshil/sample1.wav",
+  "duration_seconds": 7.25,
+  "sequence_length": 300,
+  "feature_dimension": 1024,
+  "speaker_embedding_dimension": 192,
+  "analysis": {
+    "speaker_component_norm": 228.8349151611328,
+    "speaker_embedding_norm": 322.06207275390625,
+    "speaker_contribution_ratio": 0.8512032628059387,
+    "original_feature_norm_mean": 268.83697509765625,
+    "eta_feature_norm_mean": 249.37734985351562,
+    "cosine_similarity_mean": 0.5927141904830933,
+    "cosine_similarity_std": 0.13251012563705444,
+    "original_feature_variance": 50.28135681152344,
+    "eta_feature_variance": 50.28135681152344,
+    "variance_retention_ratio": 1.0,
+    "speaker_removal_effectiveness": 0.40728580951690674
+  },
+  "model_info": {
+    "wavlm_model": "microsoft/wavlm-large",
+    "wavlm_layer": 15,
+    "speaker_encoder": "ECAPA-TDNN",
+    "A_star_shape": [
+      128,
+      1024
+    ],
+    "b_star_shape": [
+      1024
+    ]
+  }
+}
+```
+
 
