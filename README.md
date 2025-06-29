@@ -82,41 +82,41 @@ This will Give 5 files in ./inference_output:
 
 The content for `audio_output_results.json` will look like:
 <details>
-  <summary>Click to expand</summary>
-  <br>
-```json
-{
+<summary>Click to expand JSON output</summary>
+
+<br>
+
+<pre>
+<code>{
   "audio_path": "/speech/suma/rooshil/sample1.wav",
   "duration_seconds": 7.25,
   "sequence_length": 300,
   "feature_dimension": 1024,
   "speaker_embedding_dimension": 192,
   "analysis": {
-    "speaker_component_norm": 228.8349151611328,
-    "speaker_embedding_norm": 322.06207275390625,
-    "speaker_contribution_ratio": 0.8512032628059387,
-    "original_feature_norm_mean": 268.83697509765625,
-    "eta_feature_norm_mean": 249.37734985351562,
-    "cosine_similarity_mean": 0.5927141904830933,
-    "cosine_similarity_std": 0.13251012563705444,
-    "original_feature_variance": 50.28135681152344,
-    "eta_feature_variance": 50.28135681152344,
+    "speaker_component_norm": 228.8349,
+    "speaker_embedding_norm": 322.0620,
+    "speaker_contribution_ratio": 0.8512,
+    "original_feature_norm_mean": 268.8370,
+    "eta_feature_norm_mean": 249.3773,
+    "cosine_similarity_mean": 0.5927,
+    "cosine_similarity_std": 0.1325,
+    "original_feature_variance": 50.2814,
+    "eta_feature_variance": 50.2814,
     "variance_retention_ratio": 1.0,
-    "speaker_removal_effectiveness": 0.40728580951690674
+    "speaker_removal_effectiveness": 0.4073
   },
   "model_info": {
     "wavlm_model": "microsoft/wavlm-large",
     "wavlm_layer": 15,
     "speaker_encoder": "ECAPA-TDNN",
-    "A_star_shape": [
-      128,
-      1024
-    ],
-    "b_star_shape": [
-      1024
-    ]
+    "A_star_shape": [128, 1024],
+    "b_star_shape": [1024]
   }
 }
-```
+</code>
+</pre>
+
 </details>
+
 
