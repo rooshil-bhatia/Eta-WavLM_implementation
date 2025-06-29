@@ -117,6 +117,6 @@ The content for `audio_output_results.json` will look like:
     ]
   }
 }
-
-</details>```
+```
+</details>
 
