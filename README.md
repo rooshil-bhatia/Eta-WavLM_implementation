@@ -1,4 +1,4 @@
-# Eta-WavLM_implementation
+# Eta_WavLM_implementation
 Implementation of Eta-WavLM paper to get speaker independent features from WavLm features. I am using the Eta-WavLM Representations for the source utterance while inferencing from knn vc voice conversion model with litserve deployment code.
 ![Alt Text](https://github.com/rooshil-bhatia/Eta_WavLM_implementation/blob/main/knnvc_eta.jpeg)
 
