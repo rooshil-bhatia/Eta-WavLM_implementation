@@ -27,6 +27,7 @@ pip install -r requirements.txt
 ## File Structure
 
 Eta_WavLM_implementation/
+
 ├── model.py                   --> Core Eta-WavLM implementation
 
 ├── train_eta_wavlm.py         --> Training script
@@ -34,6 +35,8 @@ Eta_WavLM_implementation/
 ├── inference_eta_wavlm.py     --> Full inference wrapper
 
 ├── simple_inference.py        --> Inference example to get features from an audio
+
+├── inference_output           --> Will contain features inferenced from the file simple_inference.py
 
 ├── knnvc.py                   --> kNN-VC inference with Eta-WavLm features of the source utterance
 
