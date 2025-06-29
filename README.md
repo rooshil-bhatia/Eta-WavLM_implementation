@@ -137,10 +137,52 @@ The input format is
 ```
 Field Descriptions:
 
-audio1: Source speech audio (the content you want to convert)
+audio1: Source speech audio (the content you want to convert, the source speech audio will go through Eta-WavLm to get speaker independent features.)
 
 audio2: Reference speech audio (the target speaker voice characteristics)
 
 Format: WAV files encoded as base64 strings. You can just give the path of the wav file and it will be automatically encoded.
 
 Requirements: Any sample rate (auto-resampled to 16kHz), mono or stereo
+
+
+The output format is 
+
+```
+{
+  "output_wav_b64": "base64_encoded_converted_audio_wav"
+}
+
+```
+
+This is the voice converted audio and it will be decoded at the client side and will get saved at the desired path.
+
+2) To infer from the running server there is an example `client.py` file in which you can add path to the wav files in `src_wav_path= path_to_your_wav_file` and `ref_wav_path=path_to_your_wav_file` and you will get a voice converted wav file output saved at your desired path which you can set in file.
+
+
+## Thought Process & Understanding
+
+1) Eta-WavLm paper has proposed that speaker specific characteristics in WavLM representations can be removed through a linear transformation.
+   
+2) The training process reduces to solving a well-defined linear regression problem: S = D^T A + 1_N b^T, where the goal is to learn parameters A* and b* that best explain WavLM features in terms of PCA-reduced speaker embeddings.
+   
+3) This formulation transforms speaker identity removal from a complex neural network problem into a tractable linear algebra problem.
+   
+4) After a bit of research and reading results of the paper [Comparing the Moore-Penrose Pseudoinverse and Gradient Descent for Solving Linear Regression Problems: A Performance Analysis](https://arxiv.org/abs/2505.23552), I concluded that Pseudoinverse would be a faster, better and efficient way to solve the problem.
+   
+5) Choosing WavLM over HuBERT is a good choise as it is trained on a larger dataset is more robust to noise and can handle speech overlaps.
+
+6) Tried to do some analysis between speaker independent and speaker dependent features to see effect of traning and change in the nature of the embeddings. Unlike the paper where they improved the performance of a voice conversion system to prove their research.
+
+## Trade Offs
+
+1) Used LibriSpeech `train-clean-100` subset of the data due to storage issues.
+
+2) The paper states the their model has been trained on 1000 hours of data which might have seen more speakers and variablity than my configuration as I used 200 files to train my Eta_WavLM model.
+
+3) The model architecture for the Voice Conversion that they used has been given in the paper but rather than training it from scratch I used pre trained Knn -vc checkpoint and replaced the source utterance WavLM features with Eta_WavLM features to test the voice conversion quality and make the whole pipeline working hence making a proof of concept.
+
+## Future Plans
+
+1) To train Eta_WavLM on bigger dataset.
+2) To train an end to end voice conversion model using Eta_WavLM representations from scratch for getting the best output.
