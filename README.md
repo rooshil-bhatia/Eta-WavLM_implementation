@@ -5,7 +5,7 @@ Implementation of Eta-WavLM paper to get speaker independent features from WavLm
 ## Setting Up the Environment
 1) To clone the Repository
 ```bash
-git clone https://github.com/rooshil-bhatia/Eta-WavLM_implementation.git
+git clone https://github.com/rooshil-bhatia/Eta_WavLM_implementation.git
 ```
 2) Create a Conda Environment with python 3.10>= and activate it.
 ```bash
@@ -120,4 +120,27 @@ The content for `audio_output_results.json` will look like:
 
 </details>
 
+## Litserve Deployment Details
+1) To start the server. This will run the server `http://localhost:8000`.
 
+```bash
+python server.py
+```
+
+The input format is
+```
+{
+  "audio1": "base64_encoded_source_audio_wav",
+  "audio2": "base64_encoded_reference_audio_wav"
+}
+
+```
+Field Descriptions:
+
+audio1: Source speech audio (the content you want to convert)
+
+audio2: Reference speech audio (the target speaker voice characteristics)
+
+Format: WAV files encoded as base64 strings. You can just give the path of the wav file and it will be automatically encoded.
+
+Requirements: Any sample rate (auto-resampled to 16kHz), mono or stereo
