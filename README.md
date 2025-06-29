@@ -24,3 +24,17 @@ cd Eta_WavLM_implementation
 pip install -r requirements.txt
 ```
 
+## File Structure
+
+Eta_WavLM_implementation/
+├── model.py                   --> Core Eta-WavLM implementation
+├── train_eta_wavlm.py         --> Training script
+├── inference_eta_wavlm.py     --> Full inference wrapper
+├── simple_inference.py        --> Inference example to get features from an audio
+├── knnvc.py                   --> kNN-VC inference with Eta-WavLm features of the source utterance
+├── server.py                  --> LitServe Voice Conversion API server
+├── client.py                  --> API client Example
+├── models/                    # Trained model files will be saved here (.pkl)
+└── data/                      # LibriSpeech dataset train-clean-100
+
+
