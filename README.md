@@ -44,9 +44,13 @@ python train_eta_wavlm.py
 ```
 This will:
 1)Download LibriSpeech train-clean-100 dataset automatically (~5.95GB)
+
 2)Extract WavLM features from the 15th layer (1024 dimensions)
+
 3)Extract ECAPA-TDNN embeddings for all utterances and apply PCA reduction (192 → 128 dims)
+
 4)Learn linear transformation (A*, b*) using pseudo-inverse solution (Moore-Penrose inverse)
+
 5)Save trained model to ./models/eta_wavlm_transform.pkl
 
 ### Training Configuration
