@@ -83,6 +83,7 @@ This will Give 5 files in ./inference_output:
 The content for `audio_output_results.json` will look like:
 <details>
   <summary>Click to expand</summary>
+  <br>
 ```json
 {
   "audio_path": "/speech/suma/rooshil/sample1.wav",
