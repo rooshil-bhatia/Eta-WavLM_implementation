@@ -45,7 +45,7 @@ class SimpleEtaWavLMInference:
         
         # Extract original WavLM features (with speaker info)
         print("Extracting WavLM features...")
-        original_features = self.eta_wavlm.extract_wavlm_features(waveform, sample_rate)
+        original_features = self.eta_wavlm.extract_wavlm_features(waveform, sample_rate, inference=True)
         
         # Extract ECAPA-TDNN speaker embedding
         print("Extracting ECAPA-TDNN speaker embedding...")
@@ -91,9 +91,13 @@ class SimpleEtaWavLMInference:
         speaker_embedding = results['speaker_embedding']
         
         # Compute statistics
+        print(f'before origninal_features shape,{original_features.shape}')
         original_norm = torch.norm(original_features, dim=1)
+        print(f'before origninal_norm shape,{original_norm.shape}')
         eta_norm = torch.norm(eta_features, dim=1)
+        print(f'before speaker_component shape,{speaker_component.shape}')
         speaker_norm = torch.norm(speaker_component)
+        print(f'after speaker_norm shape,{speaker_norm.shape}')
         speaker_emb_norm = torch.norm(speaker_embedding)
         
         # Compute cosine similarity between original and eta features
