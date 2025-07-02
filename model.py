@@ -17,7 +17,7 @@ class EtaWavLMTransform:
                  wavlm_model_name="microsoft/wavlm-large",
                  speaker_encoder_name="speechbrain/spkrec-ecapa-voxceleb",
                  pca_components=128,
-                 layer_idx=15):
+                 layer_idx=6):
         """
         Initialize Eta-WavLM transform
         
@@ -25,7 +25,7 @@ class EtaWavLMTransform:
             wavlm_model_name: HuggingFace WavLM model name
             speaker_encoder_name: SpeechBrain ECAPA-TDNN model name  
             pca_components: Number of PCA components for speaker embedding reduction
-            layer_idx: WavLM layer to extract representations from (15th layer)
+            layer_idx: WavLM layer to extract representations from (6th layer)
         """
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -51,7 +51,7 @@ class EtaWavLMTransform:
         self.pca = None     # PCA transform for speaker embeddings
         self.is_trained = False
         
-    def extract_wavlm_features(self, waveform, sample_rate=16000):
+    def extract_wavlm_features(self, waveform, sample_rate=16000, inference=False):
         """Extract WavLM representations with dimension-safe preprocessing"""
         try:
             if sample_rate != 16000:
@@ -59,7 +59,7 @@ class EtaWavLMTransform:
                 waveform = resampler(waveform)
                 
             # Critical: Ensure proper tensor dimensions for WavLM
-            waveform = self._prepare_wavlm_input(waveform)
+            waveform = self._prepare_wavlm_input(waveform, inference)
             
             if waveform is None:
                 print('Error in waveform using dummy wavform.')
@@ -78,7 +78,7 @@ class EtaWavLMTransform:
             print(f"WavLM extraction error: {e}")
             return torch.zeros(100, 1024, device=self.device)
 
-    def _prepare_wavlm_input(self, waveform):
+    def _prepare_wavlm_input(self, waveform, inference):
         """Prepare waveform to meet WavLM's strict dimension requirements"""
         if waveform is None or waveform.numel() == 0:
             return None
@@ -90,25 +90,27 @@ class EtaWavLMTransform:
         if waveform.dim() != 1:
             return None
         
-        # length requirements for WavLM padding operations
-        min_length = 16000   # 1 seconds at 16kHz
-        max_length = 96000 # 6 seconds max
-        
-        current_length = waveform.shape[0]
-        
-        if current_length < min_length:
-            padding_needed = min_length - current_length
-            waveform = torch.nn.functional.pad(waveform, (0, padding_needed), mode='constant', value=0)
-        elif current_length > max_length:
-            waveform = waveform[:max_length]
-        
-        # Ensure length is compatible with WavLM's stride/kernel requirements
-        target_length = ((waveform.shape[0] // 320) + 1) * 320
-        if waveform.shape[0] < target_length:
-            padding = target_length - waveform.shape[0]
-            waveform = torch.nn.functional.pad(waveform, (0, padding), mode='constant', value=0)
-        
-        return waveform
+        if not inference:
+            min_length = 16000   
+            max_length = 96000 
+            
+            current_length = waveform.shape[0]
+            
+            if current_length < min_length:
+                padding_needed = min_length - current_length
+                waveform = torch.nn.functional.pad(waveform, (0, padding_needed), mode='constant', value=0)
+            elif current_length > max_length:
+                waveform = waveform[:max_length]
+            
+            # Ensure length is compatible with WavLM's stride/kernel requirements
+            target_length = ((waveform.shape[0] // 320) + 1) * 320
+            if waveform.shape[0] < target_length:
+                padding = target_length - waveform.shape[0]
+                waveform = torch.nn.functional.pad(waveform, (0, padding), mode='constant', value=0)
+            
+            return waveform
+        else:
+            return waveform
 
     def _manual_audio_preprocessing(self, waveform):
         """Manual audio preprocessing that avoids dimension issues"""
@@ -224,7 +226,7 @@ class EtaWavLMTransform:
             
             try:
                 # Extract WavLM features
-                wavlm_features = self.extract_wavlm_features(waveform, sample_rate)
+                wavlm_features = self.extract_wavlm_features(waveform, sample_rate, inference= False)
                 seq_len, feature_dim = wavlm_features.shape
                 
                 # Randomly subsample L frames
@@ -311,7 +313,7 @@ class EtaWavLMTransform:
             raise ValueError("Transform must be trained first!")
             
         # Extract WavLM features
-        S = self.extract_wavlm_features(waveform, sample_rate)  # [K, Q]
+        S = self.extract_wavlm_features(waveform, sample_rate, inference=True)  # [K, Q]
         
         # Extract and transform speaker embedding
         speaker_emb = self.extract_speaker_embedding(waveform, sample_rate)  # [V]
