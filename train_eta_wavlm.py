@@ -8,7 +8,7 @@ from model import EtaWavLMTransform
 class LibriSpeechDataset(Dataset):
     """LibriSpeech dataset loader with proper tensor handling for ECAPA-TDNN"""
     
-    def __init__(self, librispeech_path, subset="train-clean-100", max_files=1000, min_duration=1.0, max_duration=8.0):
+    def __init__(self, librispeech_path, subset="dev-clean", max_files=1000, min_duration=1.0, max_duration=8.0):
         self.root_path = Path(librispeech_path) / "LibriSpeech" / subset
         self.audio_files = []
         self.speaker_ids = []
@@ -123,7 +123,7 @@ def main():
     
     # Configuration
     librispeech_path = "./data"
-    model_save_path = "./models/eta_wavlm_transform.pkl"
+    model_save_path = "./models/eta_wavlm_transform_2.pkl"
     batch_size = 1
     max_training_files = 200  # Adjust based on your hardware
     
@@ -136,7 +136,7 @@ def main():
         print("Downloading LibriSpeech train-clean-100...")
         dataset = torchaudio.datasets.LIBRISPEECH(
             root=librispeech_path,
-            url="train-clean-100", 
+            url="dev-clean", 
             download=True
         )
     
@@ -146,7 +146,7 @@ def main():
         wavlm_model_name="microsoft/wavlm-large",
         speaker_encoder_name="speechbrain/spkrec-ecapa-voxceleb",
         pca_components=128,  # As used in paper
-        layer_idx=15  # 15th layer of WavLM-Large as per paper
+        layer_idx=6  # 6th layer of WavLM-Large as per paper
     )
     
     # Create dataset with validation
@@ -164,7 +164,7 @@ def main():
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     
     print(f"Training on {len(dataset)} valid audio files...")
-    print("Using WavLM-Large (15th layer) + ECAPA-TDNN as per Eta-WavLM paper")
+    print("Using WavLM-Large (6th layer) + ECAPA-TDNN as per Eta-WavLM paper")
     
     # Train the transform
     try:
